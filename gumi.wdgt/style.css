@@ -1,0 +1,263 @@
+body {
+    margin: 0px;
+    font-family: helvetica;
+    font-size: 8pt;
+    width: 224px;
+    height: 124px;
+}
+
+#front {
+    position: relative;
+}
+
+#back {
+    position: relative;
+}
+
+#info-button {
+    position: absolute;
+    bottom: 22px;
+    right: 22px;
+    width: 13px;
+    height: 13px;
+}
+
+#done-button {
+    position: absolute;
+    bottom: 5px;
+    right: 27px;
+    cursor: default;
+}
+
+#test-button {
+    position: absolute;
+    bottom: 5px;
+    left: 2px;
+    cursor: default;
+}
+
+#error-front {
+    position: absolute;
+    bottom: 2px;
+    left: 40px;
+    cursor: default;
+}
+
+#error-back {
+    position: absolute;
+    bottom: 5px;
+    left: 60px;
+    cursor: default;
+}
+
+/* tabs */
+
+#tabs {
+    position: absolute;
+    bottom: 18px;
+    left: 12px;
+}
+
+.tab {
+    padding: 1px;
+}
+
+#tab-graphs {
+    float: left;
+}
+
+#tab-table {
+    float: left;
+}
+
+/* common */
+
+#domain {
+    position: absolute;
+    top: 10px;
+    left: 12px;
+}
+
+#spinner-front {
+    position: absolute;
+    top: 12px;
+    right: 22px;
+}
+
+#spinner-back {
+    position: absolute;
+    top: 5px;
+    right: 30px;
+}
+
+/* peak */
+
+#peak-title {
+    position: absolute;
+    top: 29px;
+    left: 12px;
+}
+
+#peak-usage-text {
+    position: absolute;
+    top: 29px;
+    right: 22px;
+}
+
+#peak-usage {
+    position: absolute;
+    top: 42px;
+    left: 12px;
+    width: 189px;
+    height: 12px;
+    border: 1px solid #ccc;
+}
+
+#peak-used {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 0%;
+    height: 10px;
+    border: 1px solid #ccc;
+    background: #699;
+    z-index: 1;
+}
+
+#peak-target {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 0%;
+    height: 10px;
+    border: 1px solid #ccc;
+    background: #ccc;
+}
+
+#peak-percent {
+    position: absolute;
+    top: 0px;
+    right: 1px;
+    color: #444;
+    z-index: 2;
+}
+
+/* off-peak */
+
+#offpeak-title {
+    position: absolute;
+    top: 57px;
+    left: 12px;
+}
+
+#offpeak-usage-text {
+    position: absolute;
+    top: 57px;
+    right: 22px;
+}
+
+#offpeak-usage {
+    position: absolute;
+    top: 70px;
+    left: 12px;
+    width: 189px;
+    height: 12px;
+    border: 1px solid #ccc;
+}
+
+#offpeak-used {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 0%;
+    height: 10px;
+    border: 1px solid #ccc;
+    background: #888;
+    z-index: 1;
+}
+
+#offpeak-target {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 0%;
+    height: 10px;
+    border: 1px solid #ccc;
+    background: #ccc;
+}
+
+#offpeak-percent {
+    position: absolute;
+    top: 0px;
+    right: 1px;
+    color: #444;
+    z-index: 2;
+}
+
+/* table */
+
+#table {
+    position: absolute;
+    top: 9px;
+    left: 8px;
+    width: 198px;
+    height: 78px;
+    overflow: hidden;
+}
+
+#table-data {
+    position: absolute;
+    top: 0px;
+    left: 2px;
+    border-spacing: 0px;
+}
+
+#table-data td {
+    font-size: 8pt;
+    padding: 1px;
+}
+
+#table-data .name {
+    font-weight: bold;
+    white-space: nowrap;
+    padding-right: 10px;
+}
+
+#table-data .single_value {
+    white-space: nowrap;
+}
+
+#table-data .value {
+    white-space: nowrap;
+    text-align: right;
+    padding-right: 10px;
+}
+
+/* back */
+
+#table-prefs {
+    position: absolute;
+    top: 0px;
+    left: 2px;
+    border-spacing: 0px;
+    width: 194px;
+}
+
+#table-prefs th, #table-prefs td {
+    font-size: 8pt;
+    color: #fff;
+    padding: 0px;
+}
+
+#table-prefs th {
+    text-align: left;
+}
+
+#table-prefs input {
+    width: 100%;
+}
+
+.missing {
+    background: #fcc;
+}
+

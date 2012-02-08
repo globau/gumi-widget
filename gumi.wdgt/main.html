@@ -1,0 +1,89 @@
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this file,
+   - You can obtain one at http://mozilla.org/MPL/2.0/.  -->
+
+<!-- gumi widget
+   - byron@glob.com.au
+   - glob.com.au/gumi -->
+
+<html>
+<head>
+    <link rel="stylesheet" href="style.css">
+    <script src="gumi.js"></script>
+    <script src='/System/Library/WidgetResources/AppleClasses/AppleAnimator.js'></script>
+    <script src='file:///System/Library/WidgetResources/AppleClasses/AppleButton.js'></script>
+    <script src='file:///System/Library/WidgetResources/AppleClasses/AppleInfoButton.js'></script>
+</head>
+<body onload="init()">
+    <div id="front">
+        <img src="Default.png" width="224" height="124">
+        <img id="spinner-front" src="spinner.gif" width="16" height="11">
+
+        <div id="graphs">
+            <img id="domain" src="">
+
+            <div id="peak-title">Peak</div>
+            <div id="peak-usage-text"></div>
+            <div id="peak-usage">
+                <div id="peak-used"></div>
+                <div id="peak-target"></div>
+                <div id="peak-percent"></div>
+            </div>
+
+            <div id="offpeak-title">Off-Peak</div>
+            <div id="offpeak-usage-text"></div>
+            <div id="offpeak-usage">
+                <div id="offpeak-used"></div>
+                <div id="offpeak-target"></div>
+                <div id="offpeak-percent"></div>
+            </div>
+        </div>
+
+        <div id="table">
+            <table id="table-data">
+            </table>
+        </div>
+
+        <div id="tabs">
+            <div id="tab-graphs" class="tab">
+                <img id="tab-graphs-img" src="graphs1.png" width="16" height="16">
+            </div>
+            <div id="tab-table" class="tab">
+                <img id="tab-table-img" src="table0.png" width="16" height="16">
+            </div>
+        </div>
+
+        <img src="error.png" width="16" height="16" id="error-front">
+        <div id="info-button"></div>
+    </div>
+
+    <div id="back">
+        <img src="backside.png" width="200" height="100">
+        <img id="spinner-back" src="spinner.gif" width="16" height="11">
+
+        <table id="table-prefs" ce>
+        <tr>
+            <th>ISP:</th>
+            <td>
+                <select id="isp">
+                    <option value="westnet">Westnet</option>
+                    <option value="iinet">iiNet</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <th>Username:</th>
+            <td><input id="username"></td>
+        </tr>
+        <tr>
+            <th>Password:</th>
+            <td><input id="password" type="password"></td>
+        </tr>
+        </table>
+
+        <div id="test-button"></div>
+        <img src="error.png" width="16" height="16" id="error-back">
+        <div id="done-button"></div>
+    </div>
+</body>
+</html>
