@@ -90,21 +90,21 @@ body {
     right: 30px;
 }
 
-/* peak */
+/* graph 1 */
 
-#peak-title {
+#graph1-title {
     position: absolute;
     top: 29px;
     left: 12px;
 }
 
-#peak-usage-text {
+#graph1-usage-text {
     position: absolute;
     top: 29px;
     right: 22px;
 }
 
-#peak-usage {
+#graph1-usage {
     position: absolute;
     top: 42px;
     left: 12px;
@@ -113,7 +113,7 @@ body {
     border: 1px solid #ccc;
 }
 
-#peak-used {
+#graph1-used {
     position: absolute;
     top: 0px;
     left: 0px;
@@ -124,7 +124,7 @@ body {
     z-index: 1;
 }
 
-#peak-target {
+#graph1-target {
     position: absolute;
     top: 0px;
     left: 0px;
@@ -134,7 +134,7 @@ body {
     background: #ccc;
 }
 
-#peak-percent {
+#graph1-percent {
     position: absolute;
     top: 0px;
     right: 1px;
@@ -144,19 +144,19 @@ body {
 
 /* off-peak */
 
-#offpeak-title {
+#graph2-title {
     position: absolute;
     top: 57px;
     left: 12px;
 }
 
-#offpeak-usage-text {
+#graph2-usage-text {
     position: absolute;
     top: 57px;
     right: 22px;
 }
 
-#offpeak-usage {
+#graph2-usage {
     position: absolute;
     top: 70px;
     left: 12px;
@@ -165,7 +165,7 @@ body {
     border: 1px solid #ccc;
 }
 
-#offpeak-used {
+#graph2-used {
     position: absolute;
     top: 0px;
     left: 0px;
@@ -176,7 +176,7 @@ body {
     z-index: 1;
 }
 
-#offpeak-target {
+#graph2-target {
     position: absolute;
     top: 0px;
     left: 0px;
@@ -186,7 +186,7 @@ body {
     background: #ccc;
 }
 
-#offpeak-percent {
+#graph2-percent {
     position: absolute;
     top: 0px;
     right: 1px;

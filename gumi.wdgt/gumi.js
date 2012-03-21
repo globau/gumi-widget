@@ -14,32 +14,50 @@ var g_domain;
 var g_current_usage_xml;
 var g_last_updated;
 var g_timer;
-var g_show_unused;
+var g_graph1 = new Array();
+var g_graph2 = new Array();
 
 // paths to xml attributes/elements
 
 var XPATHS = new Array();
 XPATHS['days-so-far'] = 'ii_feed/volume_usage/quota_reset/days_so_far';
 XPATHS['days-remaining'] = 'ii_feed/volume_usage/quota_reset/days_remaining';
-XPATHS['peak'] = 'ii_feed/volume_usage/expected_traffic_types/type[@classification="peak"]/';
-XPATHS['peak-used'] = XPATHS['peak'] + '@used';
-XPATHS['peak-quota'] = XPATHS['peak'] + 'quota_allocation';
-XPATHS['offpeak'] = 'ii_feed/volume_usage/expected_traffic_types/type[@classification="offpeak"]/';
-XPATHS['offpeak-used'] = XPATHS['offpeak'] + '@used';
-XPATHS['offpeak-quota'] = XPATHS['offpeak'] + 'quota_allocation';
-XPATHS['freezone'] = 'ii_feed/volume_usage/expected_traffic_types/type[@classification="freezone"]/';
-XPATHS['freezone-used'] = XPATHS['freezone'] + '@used';
 XPATHS['offpeak-start'] = 'ii_feed/volume_usage/offpeak_start';
 XPATHS['offpeak-end'] = 'ii_feed/volume_usage/offpeak_end';
 XPATHS['plan'] = 'ii_feed/account_info/plan';
 XPATHS['error'] = 'ii_feed/error';
 
+XPATHS['peak'] = 'ii_feed/volume_usage/expected_traffic_types/type[@classification="peak"]/';
+XPATHS['peak-used'] = XPATHS['peak'] + '@used';
+XPATHS['peak-quota'] = XPATHS['peak'] + 'quota_allocation';
+
+XPATHS['offpeak'] = 'ii_feed/volume_usage/expected_traffic_types/type[@classification="offpeak"]/';
+XPATHS['offpeak-used'] = XPATHS['offpeak'] + '@used';
+XPATHS['offpeak-quota'] = XPATHS['offpeak'] + 'quota_allocation';
+
+XPATHS['anytime'] = 'ii_feed/volume_usage/expected_traffic_types/type[@classification="anytime"]/';
+XPATHS['anytime-used'] = XPATHS['anytime'] + '@used';
+XPATHS['anytime-quota'] = XPATHS['anytime'] + 'quota_allocation';
+
+XPATHS['freezone'] = 'ii_feed/volume_usage/expected_traffic_types/type[@classification="freezone"]/';
+XPATHS['freezone-used'] = XPATHS['freezone'] + '@used';
+XPATHS['freezone-quota'] = XPATHS['freezone'] + 'quota_allocation';
+
+XPATHS['uploads'] = 'ii_feed/volume_usage/expected_traffic_types/type[@classification="uploads"]/';
+XPATHS['uploads-used'] = XPATHS['uploads'] + '@used';
+XPATHS['uploads-quota'] = XPATHS['uploads'] + 'quota_allocation';
+
 // initialisation
 
 function init() {
-  g_show_unused = new Array();
-  g_show_unused['peak'] = false;
-  g_show_unused['offpeak'] = false;
+  g_graph1['name'] = 'graph1';
+  g_graph1['source'] = 'peak';
+  g_graph1['title'] = 'Peak';
+  g_graph1['show_unused'] = false;
+  g_graph2['name'] = 'graph2';
+  g_graph2['source'] = 'offpeak';
+  g_graph2['title'] = 'Off-Peak';
+  g_graph2['show_unused'] = false;
   init_ui();
   read_configuration();
   if (!g_username) {
@@ -59,8 +77,8 @@ function init_ui() {
   // hook up events
   $('tab-graphs').onclick = show_graphs;
   $('tab-table').onclick = show_table;
-  $('peak-usage-text').onclick = toggle_peak_unused;
-  $('offpeak-usage-text').onclick = toggle_offpeak_unused;
+  $('graph1-usage-text').onclick = toggle_graph1_unused;
+  $('graph2-usage-text').onclick = toggle_graph2_unused;
 
   // hide transients
   hide('spinner-front');
@@ -97,13 +115,13 @@ function show_table() {
   $('tab-table-img').src = 'table1.png';
 }
 
-function toggle_peak_unused() {
-  g_show_unused['peak'] = !g_show_unused['peak'];
+function toggle_graph1_unused() {
+  g_graph1['show_unused'] = !g_graph1['show_unused'];
   refresh_ui();
 }
 
-function toggle_offpeak_unused() {
-  g_show_unused['offpeak'] = !g_show_unused['offpeak'];
+function toggle_graph2_unused() {
+  g_graph2['show_unused'] = !g_graph2['show_unused'];
   refresh_ui();
 }
 
@@ -186,28 +204,80 @@ function refresh_ui() {
   $('domain').src = g_domain + '.png';
   if (!g_current_usage_xml)
     return;
-  refresh_graph('peak');
-  refresh_graph('offpeak');
+
+  if (xps('peak-used')) {
+    g_graph1['visible'] = true;
+    g_graph1['source'] = 'peak';
+    g_graph1['title'] = 'Peak';
+
+    g_graph2['visible'] = true;
+    g_graph2['source'] = 'offpeak';
+    g_graph2['title'] = 'Off-Peak';
+
+  } else if (xps('anytime-used')) {
+    g_graph1['visible'] = true;
+    g_graph1['source'] = 'anytime';
+    g_graph1['title'] = 'Any-Time';
+
+    if (xpi('uploads-used') > 0) {
+      g_graph2['visible'] = true;
+      g_graph2['source'] = 'uploads';
+      g_graph2['title'] = 'Uploads';
+    } else if (xpi('freezone-used') > 0) {
+      g_graph2['visible'] = true;
+      g_graph2['source'] = 'freezone';
+      g_graph2['title'] = 'FreeZone';
+    } else {
+      g_graph2['visible'] = false;
+    }
+
+  } else {
+    g_graph1['visible'] = false;
+    g_graph2['visible'] = false;
+  }
+
+  refresh_graph(g_graph1);
+  refresh_graph(g_graph2);
+
   refresh_table();
 }
 
-function refresh_graph(name) {
-  // update peak/offpeak text, percentage bar, etc
-  var used = xpi(name + '-used');
-  var quota = xpi(name + '-quota') * 1024 * 1024;
-  var days = Math.round(xpi('days-so-far') / (xpi('days-so-far') + xpi('days-remaining') - 1) * 100);
-  if (days > 100)
-    days = 100;
-  var percent = quota == 0 ? 0 : Math.round(used / quota * 100);
-  if (percent > 100)
-    percent = 100;
+function refresh_graph(graph) {
+  if (graph['visible']) {
 
-  $(name + '-usage-text').innerHTML = g_show_unused[name]
-    ? '-' + bytes_to_size(quota - used)
-    : bytes_to_size(used);
-  set_style('#' + name + '-used', 'width', percent + '%');
-  set_style('#' + name + '-target', 'width', days + '%');
-  $(name + '-percent').innerHTML = percent + '%';
+    $(graph['name']).style.display = '';
+    $(graph['name'] + '-title').innerHTML = graph['title'];
+    graph['quota'] = xps(graph['source'] + '-quota');
+
+    // update graph text, percentage bar, etc
+    var used = xpi(graph['source'] + '-used');
+
+    if (graph['quota']) {
+      $(graph['name'] + '-usage').style.display = '';
+
+      var quota = xpi(graph['source'] + '-quota') * 1024 * 1024;
+      var days = Math.round(xpi('days-so-far') / (xpi('days-so-far') + xpi('days-remaining') - 1) * 100);
+      if (days > 100)
+        days = 100;
+      var percent = quota == 0 ? 0 : Math.round(used / quota * 100);
+      if (percent > 100)
+        percent = 100;
+
+      set_style('#' + graph['name'] + '-used', 'width', percent + '%');
+      set_style('#' + graph['name'] + '-target', 'width', days + '%');
+      $(graph['name'] + '-percent').innerHTML = percent + '%';
+
+    } else {
+      $(graph['name'] + '-usage').style.display = 'none';
+      graph['show_unused'] = false;
+    }
+
+    $(graph['name'] + '-usage-text').innerHTML = graph['show_unused']
+      ? '-' + bytes_to_size(quota - used)
+      : bytes_to_size(used);
+  } else {
+    $(graph['name']).style.display = 'none';
+  }
 }
 
 function refresh_table() {
@@ -217,18 +287,27 @@ function refresh_table() {
   while (t.rows.length)
     t.deleteRow(0);
 
-  add_row(t, 'Peak',
-    bytes_to_size(xpi('peak-used')),
-    bytes_to_size(xpi('peak-quota') * 1024 * 1024)
-  );
-  add_row(t, 'Off-Peak',
-    bytes_to_size(xpi('offpeak-used')),
-    bytes_to_size(xpi('offpeak-quota') * 1024 * 1024)
-  );
-  add_row(t, 'Freezone', bytes_to_size(xpi('freezone-used')), '');
+  if (xps('peak-used'))
+    add_row(t, 'Peak',
+      bytes_to_size(xpi('peak-used')),
+      bytes_to_size(xpi('peak-quota') * 1024 * 1024)
+    );
+  if (xps('offpeak-used'))
+    add_row(t, 'Off-Peak',
+      bytes_to_size(xpi('offpeak-used')),
+      bytes_to_size(xpi('offpeak-quota') * 1024 * 1024)
+    );
+  if (xps('anytime-used'))
+    add_row(t, 'Any-Time',
+      bytes_to_size(xpi('anytime-used')),
+      bytes_to_size(xpi('anytime-quota') * 1024 * 1024)
+    );
+  if (xps('freezone-used'))
+    add_row(t, 'Freezone', bytes_to_size(xpi('freezone-used')), '');
 
   add_row(t, 'Updated', g_last_updated ? date_to_short(g_last_updated) : 'never');
-  add_row(t, 'Off-Peak', xps('offpeak-start') + ' - ' + xps('offpeak-end'));
+  if (xps('offpeak-start'))
+    add_row(t, 'Off-Peak', xps('offpeak-start') + ' - ' + xps('offpeak-end'));
 }
 
 function add_row(t, name, value1, value2) {
@@ -267,7 +346,8 @@ function poll() {
       '&username=' + encodeURIComponent(username) +
       '&password=' + encodeURIComponent(g_password);
   } else {
-    url = 'http://glob.com.au/landfill/usage.xml';
+    // url = 'http://glob.com.au/gumi/usage-split.xml';
+    url = 'http://glob.com.au/gumi/usage-unified.xml';
   }
 
   try {
