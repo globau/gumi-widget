@@ -349,6 +349,7 @@ function poll() {
     // url = 'http://glob.com.au/gumi/usage-split.xml';
     url = 'http://glob.com.au/gumi/usage-unified.xml';
   }
+  url += '&t=' + new Date().getTime();
 
   try {
     show('spinner-front');
@@ -361,7 +362,9 @@ function poll() {
         hide('spinner-back');
         if (xhr.status == 200) {
           g_current_usage_xml = xhr.responseXML;
-          if (xps('error')) {
+          if (!g_current_usage_xml) {
+            show_error('Empty reponseXML returned from iiNet');
+          } else if (xps('error')) {
             show_error(xps('error'));
           } else {
             clear_error();
@@ -371,12 +374,11 @@ function poll() {
         }
       }
     };
+    xhr.onerror = function() { show_error(e.message) };
     xhr.open("GET", url);
     xhr.setRequestHeader("Cache-Control", "no-cache");
     xhr.send(null);
   } catch (e) {
-    hide('spinner-front');
-    hide('spinner-back');
     show_error(e.message);
   }
 }
@@ -389,6 +391,8 @@ function clear_error() {
 }
 
 function show_error(message) {
+  hide('spinner-front');
+  hide('spinner-back');
   alert(message);
   $('error-front').title = message;
   $('error-back').title = message;
