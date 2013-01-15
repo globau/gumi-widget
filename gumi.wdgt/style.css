@@ -38,8 +38,8 @@ body {
 
 #error-front {
     position: absolute;
-    bottom: 2px;
-    left: 40px;
+    bottom: 18px;
+    left: 50px;
     cursor: default;
 }
 
